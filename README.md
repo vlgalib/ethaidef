@@ -135,7 +135,7 @@ MIT License - see LICENSE file for details
 
 ## 🏆 Hackathon
 
-This project was developed for [Hackathon Name] focusing on AI and DeFi innovation.
+This project was developed for EthGlobal focusing on AI and DeFi innovation.
 
 ## 📞 Contact
 
