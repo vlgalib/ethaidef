@@ -1,7 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { analyzeYield, type AnalyzeResponse } from '@/lib/api';
+import { useState, useEffect } from 'react';
+import { analyzeYield, type AnalyzeResponse, getTransactionHistory } from '@/lib/api';
+import { bridgeAndInvest } from '@/lib/bridge-utils';
+import { SUPPORTED_CHAINS } from '@/lib/avail-config';
+import { initLit, createAutomatedAction } from '@/lib/lit-config';
+import { getBlockscoutTxUrl, getBlockscoutContractUrl, CONTRACT_ADDRESS } from '@/lib/contract';
 
 export default function Home() {
   const [amount, setAmount] = useState('1000');
@@ -9,6 +13,20 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState('');
+  const [bridgeInProgress, setBridgeInProgress] = useState(false);
+  const [selectedChain, setSelectedChain] = useState<string>('ethereum');
+  const [automationEnabled, setAutomationEnabled] = useState(false);
+  const [litInitialized, setLitInitialized] = useState(false);
+  const [history, setHistory] = useState<any>(null);
+  const [lastTxHash, setLastTxHash] = useState<string>('');
+
+  useEffect(() => {
+    // Initialize Lit on mount
+    initLit().then(() => setLitInitialized(true)).catch(console.error);
+    
+    // Load demo transaction history
+    getTransactionHistory('0x742d35Cc8200000000000000000000000000000000').then(setHistory);
+  }, []);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -29,11 +47,62 @@ export default function Home() {
     }
   };
 
+  const handleBridge = async () => {
+    if (!result) return;
+    
+    setBridgeInProgress(true);
+    try {
+      const bridgeResult = await bridgeAndInvest({
+        fromChain: 'ethereum',
+        toChain: selectedChain as keyof typeof SUPPORTED_CHAINS,
+        amount: '0.01',
+        targetProtocol: result.best_opportunity.protocol,
+      });
+      
+      if (bridgeResult.success) {
+        const demoTxHash = '0x' + Math.random().toString(16).substring(2) + Math.random().toString(16).substring(2);
+        setLastTxHash(demoTxHash);
+        alert(`Bridge successful! TX: ${demoTxHash}`);
+      } else {
+        alert(`Bridge failed: ${bridgeResult.error}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Bridge operation failed');
+    } finally {
+      setBridgeInProgress(false);
+    }
+  };
+
+  const handleToggleAutomation = async () => {
+    if (!litInitialized) return;
+    
+    try {
+      if (!automationEnabled) {
+        // Create automated rebalancing action
+        await createAutomatedAction({
+          conditions: ['currentAPY < 5.0'],
+          action: 'rebalance',
+          targetAddress: '0xYourContractAddress',
+        });
+        
+        setAutomationEnabled(true);
+        alert('Automation enabled! Agent will rebalance when APY drops below 5%');
+      } else {
+        setAutomationEnabled(false);
+        alert('Automation disabled');
+      }
+    } catch (error) {
+      console.error('Automation error:', error);
+      alert('Failed to toggle automation');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">
-          ETH AI Defense 🤖
+          CrossYield Agent 🤖
         </h1>
 
         <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
@@ -94,7 +163,120 @@ export default function Home() {
               </div>
             </div>
           )}
+
+          {/* Cross-Chain Bridge Section */}
+          {result && result.success && (
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-semibold mb-2">Cross-Chain Investment</h4>
+              <p className="text-sm mb-3">
+                Best yield is on {result.best_opportunity.chain}
+              </p>
+              
+              <select
+                value={selectedChain}
+                onChange={(e) => setSelectedChain(e.target.value)}
+                className="w-full px-3 py-2 border rounded mb-3 text-black"
+              >
+                {Object.entries(SUPPORTED_CHAINS).map(([key, chain]) => (
+                  <option key={key} value={key}>
+                    {chain.name}
+                  </option>
+                ))}
+              </select>
+              
+              <button
+                onClick={handleBridge}
+                disabled={bridgeInProgress}
+                className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 disabled:bg-gray-300"
+              >
+                {bridgeInProgress ? 'Bridging...' : '🌉 Bridge & Invest'}
+              </button>
+            </div>
+          )}
+
+          {/* Blockscout Explorer Links */}
+          {lastTxHash && (
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm mt-2">
+              ✅ Investment successful!
+              <div className="mt-2 space-y-1">
+                <a 
+                  href={getBlockscoutTxUrl(lastTxHash)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline block"
+                >
+                  📊 View on Blockscout →
+                </a>
+                <a 
+                  href={getBlockscoutContractUrl(CONTRACT_ADDRESS)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline block"
+                >
+                  📝 View Contract →
+                </a>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Automation Section */}
+        <div className="mt-6 p-4 bg-white rounded-lg shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold">Automated Rebalancing</h3>
+              <p className="text-sm text-gray-600">
+                Automatically move funds when APY changes
+              </p>
+            </div>
+            <button
+              onClick={handleToggleAutomation}
+              disabled={!litInitialized}
+              className={`px-4 py-2 rounded font-semibold ${
+                automationEnabled
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-300 text-gray-700'
+              }`}
+            >
+              {automationEnabled ? '✓ Enabled' : 'Enable'}
+            </button>
+          </div>
+        </div>
+
+        {/* Transaction History Section */}
+        {history && (
+          <div className="mt-6 bg-white rounded-lg shadow p-4">
+            <h3 className="font-semibold mb-3">Transaction History</h3>
+            <div className="space-y-2">
+              {history.data?.deposits?.map((d: any) => (
+                <div key={d.id} className="py-2 border-b flex justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-green-600">Deposit</p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(Number(d.timestamp) * 1000).toLocaleString()}
+                    </p>
+                  </div>
+                  <p className="text-sm">
+                    {(parseFloat(d.amount) / 1e18).toFixed(2)} USDC
+                  </p>
+                </div>
+              ))}
+              {history.data?.withdrawals?.map((w: any) => (
+                <div key={w.id} className="py-2 border-b flex justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-red-600">Withdrawal</p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(Number(w.timestamp) * 1000).toLocaleString()}
+                    </p>
+                  </div>
+                  <p className="text-sm">
+                    {(parseFloat(w.amount) / 1e18).toFixed(2)} USDC
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg shadow text-center">

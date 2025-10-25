@@ -1,10 +1,10 @@
-# ETH AI Defense - AI-Powered DeFi Yield Optimizer
+# CrossYield Agent - AI-Powered DeFi Yield Optimizer
 
-An AI-powered application for optimizing DeFi yields across multiple protocols and chains using advanced machine learning algorithms.
+AI-powered DeFi yield optimizer with automatic cross-chain rebalancing using advanced sponsor integrations.
 
 ## 🎯 Overview
 
-ETH AI Defense is a hackathon project that combines artificial intelligence with decentralized finance to help users find the best yield opportunities across various DeFi protocols. The system analyzes yield rates, TVL, risk factors, and market conditions to provide intelligent recommendations.
+CrossYield Agent is a hackathon project that combines artificial intelligence with decentralized finance to provide seamless cross-chain yield optimization. The system uses real oracle data, automated rebalancing, and cross-chain bridging to maximize user returns across multiple DeFi protocols.
 
 ## 🏗️ Architecture
 
@@ -16,20 +16,30 @@ ETH AI Defense is a hackathon project that combines artificial intelligence with
 
 ## ✨ Features
 
-- **AI-Powered Analysis**: Advanced yield opportunity analysis using machine learning
-- **Multi-Protocol Support**: Integration with Aave V3, Compound V3, Morpho, and others
-- **Cross-Chain**: Support for multiple blockchain networks
-- **Real-Time Data**: Live yield rates and TVL monitoring
-- **Risk Assessment**: Intelligent risk evaluation for each opportunity
-- **User-Friendly Interface**: Clean, intuitive web interface
+- 🤖 **AI-Powered Analysis**: Advanced yield opportunity analysis using Groq LLM
+- 🌉 **Cross-Chain Bridging**: Seamless asset bridging via Avail Nexus SDK
+- ⚡ **Automated Rebalancing**: Smart automation using Lit Protocol Vincent
+- 📊 **Real-Time Oracle Data**: Live price feeds from Pyth Network
+- 📈 **Transaction Indexing**: Complete history tracking via Envio HyperIndex
+- 🔍 **Explorer Integration**: Transaction verification through Blockscout
+- 🔗 **Multi-Protocol Support**: Integration with Aave V3, Compound V3, Morpho
+- 💰 **Yield Optimization**: Automatic movement to highest yielding opportunities
 
 ## 🚀 Tech Stack
+
+### Sponsor Technologies
+- **Avail Nexus SDK** - Cross-chain bridging operations
+- **Lit Protocol Vincent** - Automated rebalancing framework
+- **Pyth Network** - Real-time oracle data feeds
+- **Envio HyperIndex** - Transaction history indexing
+- **Blockscout** - Blockchain explorer integration
+- **Reown** - Wallet connection infrastructure
 
 ### Backend
 - Python 3.10+
 - FastAPI for API development
 - Groq AI for LLM integration
-- Web3 libraries for blockchain interaction
+- Pyth Network for price feeds
 
 ### Frontend
 - Next.js 14

@@ -1,0 +1,21 @@
+# Envio HyperIndex Configuration
+name: crossyield-indexer
+description: Transaction indexer for CrossYield Agent
+language: typescript
+networks:
+  - id: 11155111
+    name: sepolia
+    rpc_url: https://eth-sepolia.public.blastapi.io
+    start_block: 0
+contracts:
+  - name: YieldVault
+    abi_file_path: ./abis/YieldVault.json
+    address: "0x123...abc"  # Replace with actual contract address
+    handler: ./src/EventHandlers.ts
+    events:
+      - event: Deposit
+        required_entities:
+          - YieldVault_Deposit
+      - event: Withdraw
+        required_entities:
+          - YieldVault_Withdraw
