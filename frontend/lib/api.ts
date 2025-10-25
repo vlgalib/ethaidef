@@ -28,10 +28,20 @@ export const analyzeYield = async (request: AnalyzeRequest): Promise<AnalyzeResp
   try {
     // Try to get real yield data first
     const realYields = await getAllYieldOpportunities();
+    console.log('Real yields fetched:', realYields.length, 'opportunities');
+    console.log('Sample opportunities:', realYields.slice(0, 3));
     
     if (realYields.length > 0) {
-      // Filter by minimum APY and find best opportunity
-      const validOpportunities = realYields.filter(opportunity => opportunity.apy >= request.min_apy);
+      // Filter by minimum APY and selected token
+      const validOpportunities = realYields.filter(opportunity => 
+        opportunity.apy >= request.min_apy && 
+        (opportunity.asset.includes(request.token) || 
+         opportunity.asset === request.token ||
+         (request.token === 'ETH' && (opportunity.asset.includes('ETH') || opportunity.asset.includes('WETH'))))
+      );
+      
+      console.log(`Filtered for ${request.token} with min APY ${request.min_apy}%:`, validOpportunities.length, 'valid opportunities');
+      console.log('Valid opportunities:', validOpportunities.slice(0, 3));
       
       if (validOpportunities.length > 0) {
         const bestOpportunity = validOpportunities[0]; // Already sorted by APY
@@ -55,6 +65,8 @@ export const analyzeYield = async (request: AnalyzeRequest): Promise<AnalyzeResp
           message: `Found ${validOpportunities.length} opportunities. Best yield: ${bestOpportunity.protocol} on ${bestOpportunity.chain} offering ${bestOpportunity.apy.toFixed(2)}% APY with $${(bestOpportunity.tvl / 1000000).toFixed(1)}M TVL.`
         };
       } else {
+        // If no valid opportunities after filtering, still provide info about available opportunities
+        console.log('No opportunities found after filtering. Available assets:', realYields.map(y => y.asset).filter((v, i, a) => a.indexOf(v) === i));
         return {
           success: false,
           best_opportunity: {
@@ -63,29 +75,80 @@ export const analyzeYield = async (request: AnalyzeRequest): Promise<AnalyzeResp
             apy: 0,
             tvl: 0
           },
-          message: `No opportunities found with minimum APY of ${request.min_apy}%. Try lowering your minimum APY requirement.`
+          message: `No ${request.token} opportunities found with minimum APY of ${request.min_apy}%. Available assets: ${realYields.map(y => y.asset).filter((v, i, a) => a.indexOf(v) === i).join(', ')}. Try lowering your minimum APY requirement.`
         };
       }
+    } else {
+      console.log('No real yield data returned from APIs');
     }
     
-    // Fallback to backend API if real data fails
-    const response = await axios.post(`${API_URL}/api/analyze`, request);
-    return response.data;
+    // Fallback to backend API if real data fails or is empty
+    try {
+      console.log('Trying backend API fallback...');
+      const response = await axios.post(`${API_URL}/api/analyze`, request);
+      return response.data;
+    } catch (backendError) {
+      console.log('Backend API also failed, using mock data');
+    }
   } catch (error) {
     console.error('Yield analysis error:', error);
     
-    // Return mock data as last resort
-    return {
-      success: true,
-      best_opportunity: {
-        protocol: 'Aave V3',
-        chain: 'Arbitrum',
-        apy: 4.2,
-        tvl: 125000000,
-        price_confidence: 0.85
-      },
-      message: 'Using demo data - connect wallet and ensure backend is running for real yields.'
+    // Return mock data as last resort - generate based on selected token
+    const mockOpportunities = {
+      'ETH': [
+        { protocol: 'Aave V3', chain: 'Arbitrum', apy: 2.1, tvl: 125000000 },
+        { protocol: 'Compound V3', chain: 'Base', apy: 1.8, tvl: 95000000 },
+        { protocol: 'Lido', chain: 'Ethereum', apy: 3.2, tvl: 280000000 },
+        { protocol: 'Uniswap V3', chain: 'Ethereum', apy: 2.5, tvl: 180000000 }
+      ],
+      'USDC': [
+        { protocol: 'Aave V3', chain: 'Arbitrum', apy: 4.2, tvl: 125000000 },
+        { protocol: 'Compound V3', chain: 'Base', apy: 3.8, tvl: 95000000 },
+        { protocol: 'Morpho', chain: 'Ethereum', apy: 5.1, tvl: 45000000 },
+        { protocol: 'Uniswap V3', chain: 'Polygon', apy: 3.5, tvl: 75000000 }
+      ],
+      'PYUSD': [
+        { protocol: 'Aave V3', chain: 'Ethereum', apy: 3.5, tvl: 15000000 },
+        { protocol: 'Compound V3', chain: 'Ethereum', apy: 3.2, tvl: 8000000 },
+        { protocol: 'Uniswap V3', chain: 'Ethereum', apy: 4.1, tvl: 12000000 }
+      ]
     };
+
+    const opportunities = mockOpportunities[request.token as keyof typeof mockOpportunities] || mockOpportunities['USDC'];
+    const validMockOpps = opportunities.filter(opp => opp.apy >= request.min_apy);
+    
+    if (validMockOpps.length > 0) {
+      const best = validMockOpps[0];
+      return {
+        success: true,
+        best_opportunity: {
+          protocol: best.protocol,
+          chain: best.chain,
+          apy: best.apy,
+          tvl: best.tvl,
+          price_confidence: 0.85
+        },
+        all_opportunities: validMockOpps.map(opp => ({
+          protocol: opp.protocol,
+          chain: opp.chain,
+          apy: opp.apy,
+          tvl: opp.tvl,
+          price_confidence: 0.85
+        })),
+        message: `Using demo data for ${request.token} - connect wallet and ensure backend is running for real yields.`
+      };
+    } else {
+      return {
+        success: false,
+        best_opportunity: {
+          protocol: 'None',
+          chain: 'None',
+          apy: 0,
+          tvl: 0
+        },
+        message: `No ${request.token} opportunities found with minimum APY of ${request.min_apy}%. Try lowering your minimum APY requirement.`
+      };
+    }
   }
 };
 

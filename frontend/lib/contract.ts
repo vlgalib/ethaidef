@@ -14,4 +14,4 @@ export function getBlockscoutContractUrl(address: string): string {
 }
 
 // Demo contract address for testing
-export const CONTRACT_ADDRESS = "0x742d35Cc6200000000000000000000000000000000";
+export const CONTRACT_ADDRESS = "0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352";

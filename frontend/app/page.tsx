@@ -18,6 +18,7 @@ export default function Home() {
   
   const [amount, setAmount] = useState('1000');
   const [minApy, setMinApy] = useState('5.0');
+  const [selectedCurrency, setSelectedCurrency] = useState('ETH');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [currentProtocolIndex, setCurrentProtocolIndex] = useState(0);
@@ -62,7 +63,7 @@ export default function Home() {
     
     try {
       const response = await analyzeYield({
-        token: 'USDC',
+        token: selectedCurrency,
         amount: parseFloat(amount),
         min_apy: parseFloat(minApy),
       });
@@ -195,12 +196,26 @@ export default function Home() {
           
           <div className="space-y-4 mb-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Amount (USDC)</label>
+              <label className="block text-sm font-medium mb-2">Currency</label>
+              <select
+                value={selectedCurrency}
+                onChange={(e) => setSelectedCurrency(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg text-black"
+              >
+                <option value="ETH">ETH - Ethereum</option>
+                <option value="USDC">USDC - USD Coin</option>
+                <option value="PYUSD">PYUSD - PayPal USD</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Amount ({selectedCurrency})</label>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg text-black"
+                placeholder={`Enter amount in ${selectedCurrency}`}
               />
             </div>
 
@@ -236,14 +251,32 @@ export default function Home() {
             </AlertBox>
           )}
 
-          {/* No opportunities found */}
+          {/* No opportunities found - API returned success: false */}
+          {result && !result.success && (
+            <AlertBox type="warning" title="No Suitable Protocols Found">
+              <AlertContent>
+                <p>{result.message}</p>
+                <p className="mt-2">Your search criteria:</p>
+                <ul className="list-disc list-inside ml-4 mt-1">
+                  <li>Minimum APY: <strong>{minApy}%</strong></li>
+                  <li>Token: <strong>{selectedCurrency}</strong></li>
+                  <li>Amount: <strong>${parseFloat(amount).toLocaleString()}</strong></li>
+                </ul>
+              </AlertContent>
+              <AlertNote>
+                💡 Try lowering your minimum APY requirement or check back later for new opportunities.
+              </AlertNote>
+            </AlertBox>
+          )}
+
+          {/* No opportunities found - API returned success: true but empty results */}
           {result && result.success && (!result.all_opportunities || result.all_opportunities.length === 0) && (
             <AlertBox type="warning" title="No Suitable Protocols Found">
               <AlertContent>
                 <p>No protocols found matching your requirements:</p>
                 <ul className="list-disc list-inside ml-4">
                   <li>Minimum APY: <strong>{minApy}%</strong></li>
-                  <li>Token: <strong>USDC</strong></li>
+                  <li>Token: <strong>{selectedCurrency}</strong></li>
                   <li>Amount: <strong>${parseFloat(amount).toLocaleString()}</strong></li>
                 </ul>
               </AlertContent>
@@ -467,7 +500,7 @@ export default function Home() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium text-green-700">
-                          +{(parseFloat(d.amount) / 1e18).toFixed(4)} ETH
+                          +{(parseFloat(d.amount) / 1e18).toFixed(4)} {(isConnected && chain?.nativeCurrency?.symbol) || 'ETH'}
                         </p>
                         {d.gasUsed && (
                           <p className="text-xs text-gray-500">
@@ -507,7 +540,7 @@ export default function Home() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium text-red-700">
-                          -{(parseFloat(w.amount) / 1e18).toFixed(4)} ETH
+                          -{(parseFloat(w.amount) / 1e18).toFixed(4)} {(isConnected && chain?.nativeCurrency?.symbol) || 'ETH'}
                         </p>
                         {w.gasUsed && (
                           <p className="text-xs text-gray-500">

@@ -17,12 +17,13 @@ export async function getDefiLlamaYields(): Promise<YieldData[]> {
     const response = await axios.get('https://yields.llama.fi/pools');
     const pools = response.data.data;
     
-    // Filter for stablecoin pools with good APY
+    // Filter for relevant pools with good APY
     const relevantPools = pools
       .filter((pool: any) => 
         pool.apy > 0 && 
         pool.tvlUsd > 1000000 && // Min 1M TVL
-        (pool.symbol.includes('USDC') || pool.symbol.includes('USDT') || pool.symbol.includes('DAI'))
+        (pool.symbol.includes('USDC') || pool.symbol.includes('USDT') || pool.symbol.includes('DAI') || 
+         pool.symbol.includes('ETH') || pool.symbol.includes('WETH') || pool.symbol.includes('PYUSD'))
       )
       .slice(0, 10) // Top 10 pools
       .map((pool: any) => ({
@@ -71,7 +72,7 @@ export async function getAaveV3Rates(): Promise<YieldData[]> {
         const reserves = response.data?.data?.reserves || [];
 
         for (const reserve of reserves) {
-          if (['USDC', 'USDT', 'DAI'].includes(reserve.symbol)) {
+          if (['USDC', 'USDT', 'DAI', 'ETH', 'WETH', 'PYUSD'].includes(reserve.symbol)) {
             results.push({
               protocol: 'Aave V3',
               chain: chain,
@@ -101,8 +102,10 @@ export async function getCompoundV3Rates(): Promise<YieldData[]> {
     // Compound V3 markets
     const markets = [
       { chain: 'ethereum', market: 'USDC', address: '0xc3d688B66703497DAA19211EEdff47f25384cdc3' },
+      { chain: 'ethereum', market: 'ETH', address: '0xA17581A9E3356d9A858b789D68B4d866e593aE94' },
       { chain: 'arbitrum', market: 'USDC', address: '0xA5EDBDD9646f8dFF606d7448e414884C7d905dCA' },
       { chain: 'base', market: 'USDC', address: '0xb125E6687d4313864e53df431d5425969c15Eb2F' },
+      { chain: 'base', market: 'ETH', address: '0x46e6b214b524310239732D51387075E0e70970bf' },
       { chain: 'polygon', market: 'USDC', address: '0xF25212E676D1F7F89Cd72fFEe66158f541246445' },
       { chain: 'optimism', market: 'USDC', address: '0x2e44e174f7D53F0212823acC11C01A11d58c5bCB' }
     ];
@@ -168,7 +171,13 @@ export async function getUniswapV3Yields(): Promise<YieldData[]> {
       .filter((pool: any) => 
         (pool.token0.symbol === 'USDC' && pool.token1.symbol === 'USDT') ||
         (pool.token0.symbol === 'USDC' && pool.token1.symbol === 'DAI') ||
-        (pool.token0.symbol === 'USDT' && pool.token1.symbol === 'DAI')
+        (pool.token0.symbol === 'USDT' && pool.token1.symbol === 'DAI') ||
+        (pool.token0.symbol === 'ETH' && pool.token1.symbol === 'USDC') ||
+        (pool.token0.symbol === 'WETH' && pool.token1.symbol === 'USDC') ||
+        (pool.token0.symbol === 'PYUSD' && pool.token1.symbol === 'USDC') ||
+        (pool.token0.symbol === 'USDC' && pool.token1.symbol === 'ETH') ||
+        (pool.token0.symbol === 'USDC' && pool.token1.symbol === 'WETH') ||
+        (pool.token0.symbol === 'USDC' && pool.token1.symbol === 'PYUSD')
       )
       .map((pool: any) => ({
         protocol: 'Uniswap V3',
@@ -217,6 +226,13 @@ export async function getAllYieldOpportunities(): Promise<YieldData[]> {
       getCompoundV3Rates(),
       getUniswapV3Yields()
     ]);
+
+    console.log('API Results:', {
+      defiLlama: defiLlama.status === 'fulfilled' ? `${defiLlama.value.length} opportunities` : `Failed: ${defiLlama.reason}`,
+      aave: aave.status === 'fulfilled' ? `${aave.value.length} opportunities` : `Failed: ${aave.reason}`, 
+      compound: compound.status === 'fulfilled' ? `${compound.value.length} opportunities` : `Failed: ${compound.reason}`,
+      uniswap: uniswap.status === 'fulfilled' ? `${uniswap.value.length} opportunities` : `Failed: ${uniswap.reason}`
+    });
 
     const allResults: YieldData[] = [];
 

@@ -22,13 +22,16 @@ export function WalletStatus() {
   return (
     <div className="p-4 bg-green-50 rounded-lg border border-green-200">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-green-800">
-            Connected to {chain?.name || 'Unknown Network'}
-          </p>
-          <p className="text-xs text-green-600">
-            {address?.slice(0, 8)}...{address?.slice(-6)}
-          </p>
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-sm font-medium text-green-800">
+              Connected to {chain?.name || 'Unknown Network'}
+            </p>
+            <p className="text-xs text-green-600">
+              {address?.slice(0, 8)}...{address?.slice(-6)}
+            </p>
+          </div>
+          <w3m-network-button />
         </div>
         {balance && (
           <div className="text-right">
