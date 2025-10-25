@@ -7,7 +7,7 @@ export async function initLit() {
   if (litNodeClient) return litNodeClient;
   
   litNodeClient = new LitJsSdk.LitNodeClient({
-    litNetwork: 'cayenne', // Testnet
+    litNetwork: 'datil-dev', // Supported testnet
     debug: false,
   });
   

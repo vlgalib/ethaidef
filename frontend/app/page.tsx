@@ -21,11 +21,21 @@ export default function Home() {
   const [lastTxHash, setLastTxHash] = useState<string>('');
 
   useEffect(() => {
-    // Initialize Lit on mount
-    initLit().then(() => setLitInitialized(true)).catch(console.error);
+    // Initialize Lit on mount (with error handling)
+    initLit()
+      .then(() => setLitInitialized(true))
+      .catch((error) => {
+        console.error('Lit initialization failed:', error);
+        setLitInitialized(false);
+      });
     
-    // Load demo transaction history
-    getTransactionHistory('0x742d35Cc8200000000000000000000000000000000').then(setHistory);
+    // Load demo transaction history (with error handling)
+    getTransactionHistory('0x742d35Cc8200000000000000000000000000000000')
+      .then(setHistory)
+      .catch((error) => {
+        console.error('Failed to load transaction history:', error);
+        setHistory(null);
+      });
   }, []);
 
   const handleAnalyze = async () => {
