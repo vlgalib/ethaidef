@@ -388,7 +388,7 @@ export default function Home() {
                 <p>Investment successful!</p>
                 <div className="mt-2 space-y-1">
                   <a 
-                    href={getBlockscoutTxUrl(lastTxHash)}
+                    href={getBlockscoutTxUrl(lastTxHash, chain?.name)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline block"
@@ -480,7 +480,7 @@ export default function Home() {
                           <p className="text-sm font-medium text-green-700">📈 Deposit</p>
                           {d.hash && (
                             <a 
-                              href={getBlockscoutTxUrl(d.hash)}
+                              href={getBlockscoutTxUrl(d.hash, chain?.name)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-xs text-blue-600 hover:underline"
@@ -520,7 +520,7 @@ export default function Home() {
                           <p className="text-sm font-medium text-red-700">📉 Withdrawal</p>
                           {w.hash && (
                             <a 
-                              href={getBlockscoutTxUrl(w.hash)}
+                              href={getBlockscoutTxUrl(w.hash, chain?.name)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-xs text-blue-600 hover:underline"

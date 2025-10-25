@@ -1,16 +1,35 @@
 // lib/contract.ts
-export const BLOCKSCOUT_BASE_URL = 'https://sepolia.blockscout.com';
 
-export function getBlockscoutTxUrl(txHash: string): string {
-  return `${BLOCKSCOUT_BASE_URL}/tx/${txHash}`;
+// Network-specific block explorers
+const BLOCK_EXPLORERS: Record<string, string> = {
+  ethereum: 'https://etherscan.io',
+  sepolia: 'https://sepolia.etherscan.io',
+  arbitrum: 'https://arbiscan.io', 
+  'arbitrum-sepolia': 'https://sepolia.arbiscan.io',
+  base: 'https://basescan.org',
+  'base-sepolia': 'https://sepolia.basescan.org',
+  polygon: 'https://polygonscan.com',
+  optimism: 'https://optimistic.etherscan.io'
+};
+
+export function getBlockExplorerUrl(chainName?: string): string {
+  const chain = chainName?.toLowerCase() || 'sepolia';
+  return BLOCK_EXPLORERS[chain] || BLOCK_EXPLORERS.sepolia;
 }
 
-export function getBlockscoutAddressUrl(address: string): string {
-  return `${BLOCKSCOUT_BASE_URL}/address/${address}`;
+export function getBlockscoutTxUrl(txHash: string, chainName?: string): string {
+  const baseUrl = getBlockExplorerUrl(chainName);
+  return `${baseUrl}/tx/${txHash}`;
 }
 
-export function getBlockscoutContractUrl(address: string): string {
-  return `${BLOCKSCOUT_BASE_URL}/address/${address}?tab=contract`;
+export function getBlockscoutAddressUrl(address: string, chainName?: string): string {
+  const baseUrl = getBlockExplorerUrl(chainName);
+  return `${baseUrl}/address/${address}`;
+}
+
+export function getBlockscoutContractUrl(address: string, chainName?: string): string {
+  const baseUrl = getBlockExplorerUrl(chainName);
+  return `${baseUrl}/address/${address}`;
 }
 
 // Demo contract address for testing
