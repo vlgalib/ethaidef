@@ -5,8 +5,15 @@
 *.key
 *.pem
 credentials.md
+
+# Planning and development files - exclude from git push
 plan.md
+plan-minimal-plus.md
+development-plan.md
 setup.md
+setup-instructions.md
+setup-complete.md
+SETUP_REAL.md
 
 # Dependencies
 node_modules/

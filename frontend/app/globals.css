@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Reown Web3Modal styles */
+w3m-button {
+  border-radius: 0.5rem;
+  --w3m-color-mix: #3B82F6;
+  --w3m-accent: #3B82F6;
+}

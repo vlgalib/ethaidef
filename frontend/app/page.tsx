@@ -1,13 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
 import { analyzeYield, type AnalyzeResponse, getTransactionHistory } from '@/lib/api';
 import { bridgeAndInvest } from '@/lib/bridge-utils';
 import { SUPPORTED_CHAINS } from '@/lib/avail-config';
 import { initLit, createAutomatedAction } from '@/lib/lit-config';
 import { getBlockscoutTxUrl, getBlockscoutContractUrl, CONTRACT_ADDRESS } from '@/lib/contract';
+import { WalletStatus } from '@/components/WalletStatus';
 
 export default function Home() {
+  const { address, isConnected, chain } = useAccount();
+  const { disconnect } = useDisconnect();
+  
   const [amount, setAmount] = useState('1000');
   const [minApy, setMinApy] = useState('5.0');
   const [loading, setLoading] = useState(false);
@@ -29,14 +34,16 @@ export default function Home() {
         setLitInitialized(false);
       });
     
-    // Load demo transaction history (with error handling)
-    getTransactionHistory('0x742d35Cc8200000000000000000000000000000000')
-      .then(setHistory)
-      .catch((error) => {
-        console.error('Failed to load transaction history:', error);
-        setHistory(null);
-      });
-  }, []);
+    // Load transaction history for connected wallet
+    if (isConnected && address) {
+      getTransactionHistory(address)
+        .then(setHistory)
+        .catch((error) => {
+          console.error('Failed to load transaction history:', error);
+          setHistory(null);
+        });
+    }
+  }, [isConnected, address]);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -111,11 +118,35 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">
-          CrossYield Agent 🤖
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800">
+            CrossYield Agent 🤖
+          </h1>
+          
+          {/* Wallet Connection */}
+          <div className="flex items-center gap-4">
+            {isConnected ? (
+              <div className="flex items-center gap-2">
+                <div className="px-3 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
+                  🟢 {address?.slice(0, 6)}...{address?.slice(-4)}
+                </div>
+                <button
+                  onClick={() => disconnect()}
+                  className="px-3 py-2 bg-red-100 text-red-800 rounded-lg text-sm hover:bg-red-200"
+                >
+                  Disconnect
+                </button>
+              </div>
+            ) : (
+              <w3m-button />
+            )}
+          </div>
+        </div>
 
-        <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
+        {/* Wallet Status */}
+        <WalletStatus />
+
+        <div className="bg-white rounded-lg shadow-xl p-8 mb-6 mt-6">
           <h2 className="text-2xl font-semibold mb-4">AI Yield Optimizer</h2>
           
           <div className="space-y-4 mb-6">
@@ -147,6 +178,12 @@ export default function Home() {
             >
               {loading ? 'Analyzing...' : 'Find Best Yield 🚀'}
             </button>
+            
+            {!isConnected && (
+              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                💡 Connect your wallet for personalized yield analysis and bridge functionality
+              </div>
+            )}
           </div>
 
           {error && (
@@ -196,11 +233,17 @@ export default function Home() {
               
               <button
                 onClick={handleBridge}
-                disabled={bridgeInProgress}
+                disabled={bridgeInProgress || !isConnected}
                 className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 disabled:bg-gray-300"
               >
-                {bridgeInProgress ? 'Bridging...' : '🌉 Bridge & Invest'}
+                {bridgeInProgress ? 'Bridging...' : isConnected ? '🌉 Bridge & Invest' : '🔒 Connect Wallet to Bridge'}
               </button>
+              
+              {!isConnected && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Connect wallet to enable cross-chain bridging
+                </p>
+              )}
             </div>
           )}
 
@@ -254,7 +297,7 @@ export default function Home() {
         </div>
 
         {/* Transaction History Section */}
-        {history && (
+        {isConnected && history && (
           <div className="mt-6 bg-white rounded-lg shadow p-4">
             <h3 className="font-semibold mb-3">Transaction History</h3>
             <div className="space-y-2">
