@@ -27,8 +27,14 @@
 
 4. **Run Application** (Windows):
    ```bash
-   # Double-click start.bat or run:
+   # Start application:
    start.bat
+   
+   # Stop application (kills all processes and frees ports):
+   stop.bat
+   
+   # Restart application (stop + start):
+   restart.bat
    ```
 
 5. **Manual Start**:
@@ -89,6 +95,15 @@
 - Frontend will auto-try 3001, 3002, etc. if 3000 is busy
 
 **Permission errors with .next folder:**
-- Close all terminals and VS Code
+- Run `stop.bat` to kill all processes
 - Delete .next folder manually
 - Restart development server
+
+**Clean restart:**
+- Run `stop.bat` to stop everything
+- Wait 2-3 seconds
+- Run `start.bat` to start fresh
+
+**Processes won't stop:**
+- Run `stop.bat` as Administrator
+- Or manually close terminal windows
