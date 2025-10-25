@@ -37,12 +37,21 @@ class YieldOpportunity(BaseModel):
 class AnalyzeResponse(BaseModel):
     success: bool
     best_opportunity: YieldOpportunity
+    all_opportunities: List[YieldOpportunity]
     message: str
 
 MOCK_YIELDS = [
     {"protocol": "Aave V3", "chain": "ethereum", "apy": 5.2, "tvl": 1000000},
     {"protocol": "Compound V3", "chain": "arbitrum", "apy": 6.8, "tvl": 500000},
     {"protocol": "Morpho", "chain": "base", "apy": 7.5, "tvl": 300000},
+    {"protocol": "Uniswap V3", "chain": "ethereum", "apy": 4.8, "tvl": 800000},
+    {"protocol": "Curve", "chain": "arbitrum", "apy": 6.2, "tvl": 600000},
+    {"protocol": "Balancer", "chain": "base", "apy": 5.8, "tvl": 400000},
+    {"protocol": "Aave V3", "chain": "polygon", "apy": 6.5, "tvl": 750000},
+    {"protocol": "QuickSwap", "chain": "polygon", "apy": 7.2, "tvl": 350000},
+    {"protocol": "Velodrome", "chain": "optimism", "apy": 6.9, "tvl": 450000},
+    {"protocol": "PancakeSwap", "chain": "bsc", "apy": 8.1, "tvl": 280000},
+    {"protocol": "Trader Joe", "chain": "avalanche", "apy": 7.8, "tvl": 420000},
 ]
 
 # Pyth Network price feed IDs
@@ -101,6 +110,62 @@ async def get_real_yields() -> List[Dict[str, Any]]:
                 "apy": 7.5,
                 "tvl": 300000,
                 "price_confidence": confidence_score
+            },
+            {
+                "protocol": "Uniswap V3",
+                "chain": "ethereum",
+                "apy": 4.8,
+                "tvl": 800000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "Curve",
+                "chain": "arbitrum",
+                "apy": 6.2,
+                "tvl": 600000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "Balancer",
+                "chain": "base",
+                "apy": 5.8,
+                "tvl": 400000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "Aave V3",
+                "chain": "polygon",
+                "apy": 6.5,
+                "tvl": 750000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "QuickSwap",
+                "chain": "polygon",
+                "apy": 7.2,
+                "tvl": 350000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "Velodrome",
+                "chain": "optimism",
+                "apy": 6.9,
+                "tvl": 450000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "PancakeSwap",
+                "chain": "bsc",
+                "apy": 8.1,
+                "tvl": 280000,
+                "price_confidence": confidence_score
+            },
+            {
+                "protocol": "Trader Joe",
+                "chain": "avalanche",
+                "apy": 7.8,
+                "tvl": 420000,
+                "price_confidence": confidence_score
             }
         ]
         return yields
@@ -127,7 +192,9 @@ async def analyze_yield(request: AnalyzeRequest):
     if not filtered:
         filtered = yields
     
-    best = max(filtered, key=lambda x: x["apy"])
+    # Sort by APY descending
+    sorted_yields = sorted(filtered, key=lambda x: x["apy"], reverse=True)
+    best = sorted_yields[0]
     
     try:
         prompt = f"""Analyze this DeFi yield opportunity:
@@ -149,6 +216,17 @@ Provide a brief 2-sentence recommendation considering price oracle reliability."
     except Exception as e:
         ai_message = f"AI analysis unavailable. Best yield: {best['protocol']} at {best['apy']}% APY."
     
+    # Create all opportunities list
+    all_opportunities = [
+        YieldOpportunity(
+            protocol=y['protocol'],
+            chain=y['chain'],
+            apy=y['apy'],
+            tvl=y['tvl'],
+            price_confidence=y.get('price_confidence', 0.0)
+        ) for y in sorted_yields
+    ]
+    
     return AnalyzeResponse(
         success=True,
         best_opportunity=YieldOpportunity(
@@ -158,6 +236,7 @@ Provide a brief 2-sentence recommendation considering price oracle reliability."
             tvl=best['tvl'],
             price_confidence=best.get('price_confidence', 0.0)
         ),
+        all_opportunities=all_opportunities,
         message=ai_message
     )
 

@@ -1,0 +1,17 @@
+[profile.default]
+src = "."
+out = "out"
+libs = ["lib"]
+remappings = []
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/crates/config
+
+[rpc_endpoints]
+sepolia = "https://ethereum-sepolia.publicnode.com"
+arbitrum_sepolia = "https://arbitrum-sepolia.publicnode.com"
+base_sepolia = "https://base-sepolia.publicnode.com"
+
+[etherscan]
+sepolia = { key = "${ETHERSCAN_API_KEY}", url = "https://api-sepolia.etherscan.io/api" }
+arbitrum_sepolia = { key = "${ARBISCAN_API_KEY}", url = "https://api-sepolia.arbiscan.io/api" }
+base_sepolia = { key = "${BASESCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api" }

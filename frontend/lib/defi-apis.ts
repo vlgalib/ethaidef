@@ -45,7 +45,7 @@ export async function getDefiLlamaYields(): Promise<YieldData[]> {
 // Aave V3 API integration
 export async function getAaveV3Rates(): Promise<YieldData[]> {
   try {
-    const chains = ['ethereum', 'arbitrum', 'base'];
+    const chains = ['ethereum', 'arbitrum', 'base', 'polygon', 'optimism'];
     const results: YieldData[] = [];
 
     for (const chain of chains) {
@@ -102,7 +102,9 @@ export async function getCompoundV3Rates(): Promise<YieldData[]> {
     const markets = [
       { chain: 'ethereum', market: 'USDC', address: '0xc3d688B66703497DAA19211EEdff47f25384cdc3' },
       { chain: 'arbitrum', market: 'USDC', address: '0xA5EDBDD9646f8dFF606d7448e414884C7d905dCA' },
-      { chain: 'base', market: 'USDC', address: '0xb125E6687d4313864e53df431d5425969c15Eb2F' }
+      { chain: 'base', market: 'USDC', address: '0xb125E6687d4313864e53df431d5425969c15Eb2F' },
+      { chain: 'polygon', market: 'USDC', address: '0xF25212E676D1F7F89Cd72fFEe66158f541246445' },
+      { chain: 'optimism', market: 'USDC', address: '0x2e44e174f7D53F0212823acC11C01A11d58c5bCB' }
     ];
 
     const results: YieldData[] = [];
@@ -188,7 +190,9 @@ function getAaveSubgraphUrl(chain: string): string | null {
   const urls: Record<string, string> = {
     'ethereum': 'https://api.thegraph.com/subgraphs/name/aave/aave-v3-ethereum',
     'arbitrum': 'https://api.thegraph.com/subgraphs/name/aave/aave-v3-arbitrum',
-    'base': 'https://api.studio.thegraph.com/query/24660/aave-v3-base/version/latest'
+    'base': 'https://api.studio.thegraph.com/query/24660/aave-v3-base/version/latest',
+    'polygon': 'https://api.thegraph.com/subgraphs/name/aave/aave-v3-polygon',
+    'optimism': 'https://api.thegraph.com/subgraphs/name/aave/aave-v3-optimism'
   };
   return urls[chain] || null;
 }
