@@ -46,12 +46,12 @@
    ```
 
 6. **Access Application**:
-   - **Frontend**: http://localhost:3000 (or 3001 if 3000 is busy)
+   - **Frontend**: http://localhost:3000 (Next.js will auto-find available port: 3001, 3002, etc.)
    - **Backend API**: http://127.0.0.1:5000
 
 ## 🧪 Testing the Application
 
-1. Open http://localhost:3000 (or 3001)
+1. Open the frontend URL shown in terminal (usually http://localhost:3000, 3001, or 3002)
 2. Enter amount: 1000
 3. Enter minimum APY: 5.0
 4. Click "Find Best Yield 🚀"
@@ -78,9 +78,17 @@
 
 **Frontend won't start:**
 - Check if Node.js is installed: `node --version`
-- Install dependencies: `npm install`
-- Try different port if 3000 is busy
+- Install dependencies: `npm install && npm install autoprefixer`
+- Delete .next folder if permission errors: `rm -rf .next` (then restart)
+
+**Missing autoprefixer error:**
+- Run: `npm install autoprefixer`
 
 **Port already in use:**
 - Backend will auto-use port 5000
-- Frontend will auto-try 3001 if 3000 is busy
+- Frontend will auto-try 3001, 3002, etc. if 3000 is busy
+
+**Permission errors with .next folder:**
+- Close all terminals and VS Code
+- Delete .next folder manually
+- Restart development server
