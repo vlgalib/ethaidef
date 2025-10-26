@@ -1,4 +1,22 @@
-# CrossYield Agent - AI-Powered DeFi Yield Optimizer
+# 🌍 ETHOnline 2025 Submission – CrossYield Agent
+
+<div align="center">
+
+![ETHOnline 2025](https://img.shields.io/badge/ETHOnline-2025-brightgreen?style=for-the-badge&logo=ethereum)
+![Hackathon](https://img.shields.io/badge/Hackathon-Submission-orange?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)
+
+**🤖 AI-Powered DeFi Yield Optimizer with Cross-Chain Automation**
+
+*7 Sponsor Integrations • Real-Time Data • Production Grade*
+
+[![Demo](https://img.shields.io/badge/🚀_Live_Demo-localhost:3001-blue?style=flat-square)](http://localhost:3001)
+[![Contract](https://img.shields.io/badge/📜_Smart_Contract-Sepolia_Verified-green?style=flat-square)](https://sepolia.blockscout.com/address/0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352)
+[![License](https://img.shields.io/badge/📄_License-MIT-yellow?style=flat-square)](LICENSE)
+
+</div>
+
+---
 
 AI-powered DeFi yield optimizer with automatic cross-chain rebalancing using advanced sponsor integrations.
 
@@ -9,8 +27,8 @@ CrossYield Agent is a hackathon project that combines artificial intelligence wi
 ## 🏗️ Architecture
 
 - **Backend**: Python FastAPI with Groq AI integration
-- **Frontend**: Next.js 14 with TypeScript and Tailwind CSS
-- **Smart Contracts**: Solidity contracts deployed using Foundry
+- **Frontend**: Next.js 15 with TypeScript and Tailwind CSS
+- **Smart Contracts**: Solidity contracts deployed using Hardhat
 - **AI**: Groq LLM (Llama 3.1) for yield analysis and recommendations
 - **Blockchain**: Multi-chain support (Ethereum, Arbitrum, Base)
 
@@ -42,14 +60,14 @@ CrossYield Agent is a hackathon project that combines artificial intelligence wi
 - Pyth Network for price feeds
 
 ### Frontend
-- Next.js 14
+- Next.js 15
 - TypeScript
 - Tailwind CSS
 - Responsive design
 
 ### Smart Contracts
 - Solidity
-- Foundry for development and testing
+- Hardhat for development and testing
 - OpenZeppelin libraries
 
 ### AI & Data
@@ -63,7 +81,7 @@ CrossYield Agent is a hackathon project that combines artificial intelligence wi
 - Node.js 20+
 - Python 3.10+
 - Git
-- Foundry
+- Hardhat
 
 ### Installation
 
@@ -95,8 +113,8 @@ npm run dev
 
 # Smart Contracts
 cd ../contracts
-forge build
-forge test
+npm install
+npx hardhat compile
 ```
 
 ## 🌐 Supported Protocols
@@ -231,7 +249,7 @@ MIT License - see LICENSE file for details
 
 ### Hackathon Achievements
 - **7/7 Sponsor Integrations** - All successfully implemented and functional
-- **Real-Time Data** - No mock data, all APIs live and working
+- **Real-Time Data** - Live APIs and working integrations
 - **Cross-Chain Functionality** - Actual bridging between Ethereum, Arbitrum, Base
 - **AI-Powered Analysis** - Groq LLM making real yield optimization decisions
 - **Production Ready** - Deployed contracts, working frontend, comprehensive testing
