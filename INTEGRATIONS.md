@@ -15,7 +15,7 @@
 - **Avail**: `frontend/lib/avail-config.ts`, `frontend/lib/bridge-utils.ts`
 - **Pyth**: `backend/main.py` (get_pyth_price, real price feeds)
 - **Lit**: `frontend/lib/lit-config.ts` (datil-dev network)
-- **Envio**: `indexer/src/EventHandlers.ts`, `frontend/lib/api.ts`
+- **Envio**: `indexer/src/EventHandlers.ts`, `frontend/components/Dashboard.tsx`
 - **Blockscout**: `frontend/lib/contract.ts` (explorer link utilities)
 - **DeFi APIs**: `frontend/lib/defi-apis.ts` (real protocol data)
 
@@ -82,7 +82,7 @@
 - **AI-powered decision making** with live oracle data
 - **Complete transaction lifecycle** tracking and indexing
 - **Production-ready wallet integration** with multiple providers
-- **Real DeFi protocol APIs** replacing all mock data
+- **Real DeFi protocol APIs** with live data integration
 - **Comprehensive automation framework** for autonomous operations
 
 ## Development Status

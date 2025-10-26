@@ -4,13 +4,10 @@
 
 ![ETHOnline 2025](https://img.shields.io/badge/ETHOnline-2025-brightgreen?style=for-the-badge&logo=ethereum)
 ![Hackathon](https://img.shields.io/badge/Hackathon-Submission-orange?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Demo%20Ready-blue?style=for-the-badge)
 
 **🤖 AI-Powered DeFi Yield Optimizer with Cross-Chain Automation**
 
-*7 Sponsor Integrations • Real-Time Data • Production Grade*
-
-[![Demo](https://img.shields.io/badge/🚀_Live_Demo-localhost:3001-blue?style=flat-square)](http://localhost:3001)
 [![Contract](https://img.shields.io/badge/📜_Smart_Contract-Sepolia_Verified-green?style=flat-square)](https://sepolia.blockscout.com/address/0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352)
 [![License](https://img.shields.io/badge/📄_License-MIT-yellow?style=flat-square)](LICENSE)
 
@@ -235,30 +232,18 @@ MIT License - see LICENSE file for details
 
 ## 🏆 Hackathon Tracking Section
 
-### Prize Eligibility Table
+### Sponsor Integration Table
 
-| **Sponsor** | **Integration** | **Status** | **Prize Track** | **Evidence** |
-|-------------|----------------|------------|-----------------|--------------|
-| **Reown** | WalletConnect Integration | ✅ **COMPLETE** | Best Use of Reown | `lib/wallet-config.ts` - Project ID: `e8b9edb13577566316699eb0b0e07ac6` |
-| **Avail** | Nexus SDK Cross-Chain Bridge | ✅ **COMPLETE** | Best Use of Avail | `lib/avail-config.ts`, `AVAIL_FEEDBACK.md` - 8/10 developer rating |
-| **Pyth Network** | Real-Time Oracle Data | ✅ **COMPLETE** | Best Use of Pyth | `backend/main.py` - Live price feeds integration |
-| **Lit Protocol** | Vincent Automation Framework | ✅ **COMPLETE** | Best Use of Lit Protocol | `lib/lit-config.ts` - Automated rebalancing conditions |
-| **Envio** | HyperIndex Transaction Indexing | ✅ **COMPLETE** | Best Use of Envio | `indexer/dashboard.html` - Live at localhost:8080 |
-| **Blockscout** | Multi-Chain Explorer Integration | ✅ **COMPLETE** | Best Use of Blockscout | [Contract on Sepolia](https://sepolia.blockscout.com/address/0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352) |
-| **ASI Alliance** | Groq AI-Powered Analysis | ✅ **COMPLETE** | Best Use of ASI Alliance | `backend/main.py` - Groq LLM yield optimization |
+| **Sponsor** | **Integration** | **Evidence** |
+|-------------|----------------|--------------|
+| **Reown** | WalletConnect Integration | `lib/wallet-config.ts` - Project ID: `e8b9edb13577566316699eb0b0e07ac6` |
+| **Avail** | Nexus SDK Cross-Chain Bridge | `lib/avail-config.ts`, `AVAIL_FEEDBACK.md` |
+| **Pyth Network** | Real-Time Oracle Data | `backend/main.py` - Live price feeds integration |
+| **Lit Protocol** | Vincent Automation Framework | `lib/lit-config.ts` - Automated rebalancing conditions |
+| **Envio** | HyperIndex Transaction Indexing | `frontend/components/Dashboard.tsx` - Integrated analytics |
+| **Blockscout** | Multi-Chain Explorer Integration | [Contract on Sepolia](https://sepolia.blockscout.com/address/0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352) |
+| **ASI Alliance** | Groq AI-Powered Analysis | `backend/main.py` - Groq LLM yield optimization |
 
-### Hackathon Achievements
-- **7/7 Sponsor Integrations** - All successfully implemented and functional
-- **Real-Time Data** - Live APIs and working integrations
-- **Cross-Chain Functionality** - Actual bridging between Ethereum, Arbitrum, Base
-- **AI-Powered Analysis** - Groq LLM making real yield optimization decisions
-- **Production Ready** - Deployed contracts, working frontend, comprehensive testing
-
-### Demo Links
-- **Frontend**: http://localhost:3001 (Next.js application)
-- **Backend**: http://localhost:5000 (FastAPI with Groq AI)
-- **Dashboard**: http://localhost:8080 (Envio HyperIndex analytics)
-- **Contract**: [0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352](https://sepolia.blockscout.com/address/0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352)
 
 ## 🏆 Hackathon Submission
 
