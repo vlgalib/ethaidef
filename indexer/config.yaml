@@ -10,7 +10,7 @@ networks:
 contracts:
   - name: YieldVault
     abi_file_path: ./abis/YieldVault.json
-    address: "0x123...abc"  # Replace with actual contract address
+    address: "0x1Dbedf3bEaad6b0e3569d96951B18DB9e23f3352"
     handler: ./src/EventHandlers.ts
     events:
       - event: Deposit

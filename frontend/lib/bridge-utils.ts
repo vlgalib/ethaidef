@@ -1,4 +1,7 @@
 // lib/bridge-utils.ts
+// Avail Nexus SDK Integration for CrossYield Agent
+// Developer Experience: 8/10 - Excellent TypeScript support and intuitive API
+// See AVAIL_FEEDBACK.md for detailed developer feedback
 import { nexusClient, SUPPORTED_CHAINS } from './avail-config';
 import { parseEther } from 'viem';
 

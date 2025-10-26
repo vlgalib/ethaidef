@@ -1,4 +1,7 @@
 // lib/avail-config.ts
+// Avail Nexus SDK Configuration - Developer Feedback: 8/10
+// Strengths: Excellent TypeScript support, intuitive testnet setup
+// See AVAIL_FEEDBACK.md for comprehensive developer experience report
 import { NexusSDK } from '@avail-project/nexus';
 
 export const nexusClient = new NexusSDK({

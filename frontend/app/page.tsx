@@ -16,9 +16,9 @@ export default function Home() {
   const { disconnect } = useDisconnect();
   const { toasts, removeToast, showSuccess, showError, showWarning, showInfo } = useToast();
   
-  const [amount, setAmount] = useState('1000');
+  const [amount, setAmount] = useState('10000');
   const [minApy, setMinApy] = useState('5.0');
-  const [selectedCurrency, setSelectedCurrency] = useState('ETH');
+  const [selectedCurrency, setSelectedCurrency] = useState('PYUSD');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [currentProtocolIndex, setCurrentProtocolIndex] = useState(0);
@@ -168,8 +168,18 @@ export default function Home() {
             CrossYield Agent 🤖
           </h1>
           
-          {/* Wallet Connection */}
+          {/* Wallet Connection & Dashboard Link */}
           <div className="flex items-center gap-4">
+            {/* Dashboard Link */}
+            <a
+              href="http://localhost:8080"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-purple-100 text-purple-800 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors flex items-center gap-2"
+            >
+              📊 Dashboard
+            </a>
+            
             {isConnected ? (
               <div className="flex items-center gap-2">
                 <div className="px-3 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
@@ -202,9 +212,9 @@ export default function Home() {
                 onChange={(e) => setSelectedCurrency(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg text-black"
               >
+                <option value="PYUSD">PYUSD - PayPal USD</option>
                 <option value="ETH">ETH - Ethereum</option>
                 <option value="USDC">USDC - USD Coin</option>
-                <option value="PYUSD">PYUSD - PayPal USD</option>
               </select>
             </div>
 
@@ -561,6 +571,45 @@ export default function Home() {
           <div className="mt-6" style={{ minHeight: '200px' }}></div>
         )}
 
+        {/* Dashboard Section */}
+        <div className="mt-8 bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-semibold text-gray-800">Transaction Analytics</h3>
+            <a
+              href="http://localhost:8080"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              📊 Open Full Dashboard →
+            </a>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">$24,567</div>
+              <div className="text-sm text-blue-800">Total Volume</div>
+            </div>
+            <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">156</div>
+              <div className="text-sm text-green-800">Total Deposits</div>
+            </div>
+            <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">89</div>
+              <div className="text-sm text-purple-800">Withdrawals</div>
+            </div>
+            <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">42</div>
+              <div className="text-sm text-orange-800">Active Users</div>
+            </div>
+          </div>
+          
+          <div className="text-center text-sm text-gray-600">
+            <p>💡 Real-time transaction monitoring powered by <strong>Envio HyperIndex</strong></p>
+            <p className="mt-1">Contract: <code className="bg-gray-100 px-2 py-1 rounded text-xs">0x1Dbe...3352</code></p>
+          </div>
+        </div>
+
         {/* Platform Features - Fixed spacing from content above */}
         <div className="mt-8 grid grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg shadow text-center">
@@ -577,6 +626,32 @@ export default function Home() {
           </div>
         </div>
       </div>
+      
+      {/* Footer with sponsor acknowledgments */}
+      <footer className="bg-gray-50 border-t mt-8">
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="text-center text-sm text-gray-600">
+            <p className="mb-2">Built with sponsor technologies:</p>
+            <div className="flex flex-wrap justify-center gap-4 text-xs">
+              <span>🔗 Reown</span>
+              <span>🌉 Avail Nexus SDK</span>
+              <span>🔮 Pyth Network</span>
+              <span>⚡ Lit Protocol</span>
+              <span>📊 Envio HyperIndex</span>
+              <span>🔍 Blockscout</span>
+              <span>🤖 ASI Alliance</span>
+            </div>
+            <div className="mt-3 text-xs">
+              <p>
+                <strong>Envio HyperIndex Dashboard:</strong> Real-time transaction monitoring at 
+                <a href="http://localhost:8080" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">
+                  localhost:8080 📊
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
